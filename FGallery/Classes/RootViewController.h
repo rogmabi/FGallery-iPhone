@@ -14,9 +14,12 @@
     NSArray *localImages;
     NSArray *networkCaptions;
     NSArray *networkImages;
+    NSArray *documentsCaptions;
+    NSArray *documentsImages;
     NSUInteger imageCount;
 	FGalleryViewController *localGallery;
     FGalleryViewController *networkGallery;
+    FGalleryViewController *documentsGallery;
 }
 
 @end

@@ -21,7 +21,8 @@ typedef enum
 typedef enum
 {
 	FGalleryPhotoSourceTypeNetwork,
-	FGalleryPhotoSourceTypeLocal
+	FGalleryPhotoSourceTypeLocal,
+    FGalleryPhotoSourceTypeDocuments
 } FGalleryPhotoSourceType;
 
 @protocol FGalleryViewControllerDelegate;
@@ -37,6 +38,8 @@ typedef enum
 	BOOL _isScrolling;
 	
 	BOOL _isThumbViewShowing;
+    
+    BOOL _isDocumentsGallery;
 	
 	float _prevNextButtonSize;
 	
@@ -84,6 +87,8 @@ typedef enum
 - (void)next;
 - (void)previous;
 - (void)gotoImageByIndex:(NSUInteger)index animated:(BOOL)animated;
+
+@property (readonly) BOOL isDocumentsGallery;
 
 @property (nonatomic,assign) NSObject<FGalleryViewControllerDelegate> *photoSource;
 @property (nonatomic,readonly) UIToolbar *toolBar;

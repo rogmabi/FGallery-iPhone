@@ -22,8 +22,11 @@
 	localCaptions = [[NSArray alloc] initWithObjects:@"Lava", @"Hawaii", @"Audi", @"Happy New Year!",@"Frosty Web",nil];
     localImages = [[NSArray alloc] initWithObjects: @"lava.jpeg", @"hawaii.jpeg", @"audi.jpg",nil];
     
-    networkCaptions = [[NSArray alloc] initWithObjects:@"Happy New Year!",@"Frosty Web",nil];
-    networkImages = [[NSArray alloc] initWithObjects:@"http://farm6.static.flickr.com/5042/5323996646_9c11e1b2f6_b.jpg", @"http://farm6.static.flickr.com/5007/5311573633_3cae940638.jpg", @"Audi", @"Happy New Year!",@"Frosty Web",nil];
+    networkCaptions = [[NSArray alloc] initWithObjects:@"Winter spider", @"Happy New Year!",nil];
+    networkImages = [[NSArray alloc] initWithObjects:@"http://farm6.static.flickr.com/5042/5323996646_9c11e1b2f6_b.jpg", @"http://farm6.static.flickr.com/5007/5311573633_3cae940638.jpg",nil];
+    
+    documentsCaptions = [[NSArray alloc] initWithObjects:@"photo1.jpg", @"photo2.jpg", nil];
+    documentsImages = [[NSArray alloc] initWithObjects:@"/866/periodic/keys/photo1.jpg", @"/866/periodic/bathroom/photo2.jpg", nil];
 }
 
 #pragma mark - Table view data source
@@ -36,7 +39,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return 4;
 }
 
 
@@ -60,6 +63,9 @@
 	else if( indexPath.row == 2 ) {
 		cell.textLabel.text = @"Custom Controls";
 	}
+    else if( indexPath.row == 3 ) {
+        cell.textLabel.text = @"Documents Gallery";
+    }
 
     return cell;
 }
@@ -77,6 +83,9 @@
     else if( gallery == networkGallery ) {
         num = [networkImages count];
     }
+    else if (gallery == documentsGallery) {
+        num = [documentsImages count];
+    }
 	return num;
 }
 
@@ -86,7 +95,11 @@
 	if( gallery == localGallery ) {
 		return FGalleryPhotoSourceTypeLocal;
 	}
-	else return FGalleryPhotoSourceTypeNetwork;
+	else if (gallery == documentsGallery) {
+        return FGalleryPhotoSourceTypeDocuments;
+    } else {
+        return FGalleryPhotoSourceTypeNetwork;
+    }
 }
 
 
@@ -98,13 +111,20 @@
     }
     else if( gallery == networkGallery ) {
         caption = [networkCaptions objectAtIndex:index];
+    } 
+    else if( gallery == documentsGallery) {
+        caption = [documentsCaptions objectAtIndex:index];
     }
 	return caption;
 }
 
 
 - (NSString*)photoGallery:(FGalleryViewController*)gallery filePathForPhotoSize:(FGalleryPhotoSize)size atIndex:(NSUInteger)index {
-    return [localImages objectAtIndex:index];
+    if (gallery == localGallery) {
+        return [localImages objectAtIndex:index];
+    } else {
+        return [documentsImages objectAtIndex:index];
+    }
 }
 
 - (NSString*)photoGallery:(FGalleryViewController *)gallery urlForPhotoSize:(FGalleryPhotoSize)size atIndex:(NSUInteger)index {
@@ -126,17 +146,20 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
-    imageCount = 5;
+    
     
 	if( indexPath.row == 0 ) {
 		localGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
         [self.navigationController pushViewController:localGallery animated:YES];
+        
         [localGallery release];
+        imageCount = [localImages count];
 	}
     else if( indexPath.row == 1 ) {
 		networkGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
         [self.navigationController pushViewController:networkGallery animated:YES];
-        [networkGallery release];        
+        [networkGallery release];    
+        imageCount = [networkImages count];
     }
 	else if( indexPath.row == 2 ) {
 		UIImage *trashIcon = [UIImage imageNamed:@"photo-gallery-trashcan.png"];
@@ -148,7 +171,13 @@
 		localGallery = [[FGalleryViewController alloc] initWithPhotoSource:self barItems:barItems];
         [self.navigationController pushViewController:localGallery animated:YES];
         [localGallery release];
-	}
+        imageCount = [localImages count];
+	} else if (indexPath.row == 3) {
+        documentsGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
+        [self.navigationController pushViewController:documentsGallery animated:YES];
+        [documentsGallery release];
+        imageCount = [documentsImages count];
+    }
 }
 
 

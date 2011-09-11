@@ -21,6 +21,8 @@
 	
 	BOOL _isFullsizeLoading;
 	BOOL _hasFullsizeLoaded;
+    
+    BOOL _loadsFromDocuments;
 	
 	NSMutableData *_thumbData;
 	NSMutableData *_fullsizeData;
@@ -42,6 +44,7 @@
 
 - (id)initWithThumbnailUrl:(NSString*)thumb fullsizeUrl:(NSString*)fullsize delegate:(NSObject<FGalleryPhotoDelegate>*)delegate;
 - (id)initWithThumbnailPath:(NSString*)thumb fullsizePath:(NSString*)fullsize delegate:(NSObject<FGalleryPhotoDelegate>*)delegate;
+- (id)initFromDocumentsWithThumbnailPath:(NSString*)thumb fullsizePath:(NSString*)fullsize delegate:(NSObject<FGalleryPhotoDelegate>*)delegate;
 
 - (void)loadThumbnail;
 - (void)loadFullsize;
@@ -57,8 +60,10 @@
 @property (readonly) BOOL isFullsizeLoading;
 @property (readonly) BOOL hasFullsizeLoaded;
 
-@property (nonatomic,readonly) UIImage *thumbnail;
-@property (nonatomic,readonly) UIImage *fullsize;
+@property (readwrite) BOOL loadsFromDocuments;
+
+@property (nonatomic,retain) UIImage *thumbnail;
+@property (nonatomic,retain) UIImage *fullsize;
 
 @property (nonatomic,assign) NSObject<FGalleryPhotoDelegate> *delegate;
 

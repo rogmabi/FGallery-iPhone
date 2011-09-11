@@ -35,6 +35,8 @@
 @synthesize delegate = _delegate;
 @synthesize isFullsizeLoading = _isFullsizeLoading;
 @synthesize hasFullsizeLoaded = _hasFullsizeLoaded;
+@synthesize loadsFromDocuments = _loadsFromDocuments;
+
 @synthesize isThumbLoading = _isThumbLoading;
 @synthesize hasThumbLoaded = _hasThumbLoaded;
 
@@ -53,6 +55,18 @@
 {
 	self = [super init];
 	
+	_useNetwork = NO;
+	_thumbUrl = [thumb retain];
+	_fullsizeUrl = [fullsize retain];
+	_delegate = delegate;
+	return self;
+}
+
+- (id)initFromDocumentsWithThumbnailPath:(NSString*)thumb fullsizePath:(NSString*)fullsize delegate:(NSObject<FGalleryPhotoDelegate>*)delegate
+{
+	self = [super init];
+	
+    _loadsFromDocuments = YES;
 	_useNetwork = NO;
 	_thumbUrl = [thumb retain];
 	_fullsizeUrl = [fullsize retain];
@@ -122,9 +136,32 @@
 - (void)loadFullsizeInThread
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] bundlePath], _fullsizeUrl];
-	_fullsize = [[UIImage imageWithContentsOfFile:path] retain];
+    
+    if (_loadsFromDocuments) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths lastObject];
+        BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:documentsDirectory];
+#warning FIX: can't read from Documents Directory...............
+        NSString *path = [NSString stringWithFormat:@"%@%@", documentsDirectory, _fullsizeUrl];
+        NSLog(@"%@", path);
+        NSLog(@"%@", documentsDirectory);
+//        NSString *keysPath = [documentsDirectory stringByAppendingPathComponent:@"866/periodic/bathroom"];
+        NSArray *content = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectory error:nil];
+        NSLog(@"content of directory %@:\n%@",documentsDirectory, content);
+
+//        NSLog(@"%@", keysPath);
+//        exists = [[NSFileManager defaultManager] fileExistsAtPath:keysPath];
+        
+        if (exists) {
+            _fullsize = [[UIImage imageWithContentsOfFile:path] retain];
+            NSLog(@"%@", [_fullsize description]);
+        } else {
+            NSLog(@"file does not exist");
+        }
+    } else {
+        NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] bundlePath], _fullsizeUrl];
+        _fullsize = [[UIImage imageWithContentsOfFile:path] retain];
+    }
 	
 	_hasFullsizeLoaded = YES;
 	_isFullsizeLoading = NO;

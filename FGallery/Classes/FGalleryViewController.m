@@ -69,6 +69,8 @@
 
 
 @implementation FGalleryViewController
+
+@synthesize isDocumentsGallery;
 @synthesize galleryID;
 @synthesize photoSource = _photoSource, currentIndex = _currentIndex, thumbsView = _thumbsView, toolBar = _toolbar;
 
@@ -461,7 +463,7 @@
 	if ([application respondsToSelector: @selector(setStatusBarHidden:withAnimation:)]) {
 		[[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation: UIStatusBarAnimationFade]; // 3.2+
 	} else {
-		[[UIApplication sharedApplication] setStatusBarHidden: YES animated:YES]; // 2.0 - 3.2
+		[[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation:UIStatusBarAnimationFade]; // 2.0 - 3.2
 	}
 	
 	[self.navigationController setNavigationBarHidden:YES animated:YES];
@@ -486,7 +488,7 @@
 	if ([application respondsToSelector: @selector(setStatusBarHidden:withAnimation:)]) {
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade]; // 3.2+
 	} else {
-		[[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // 2.0 - 3.2
+		[[UIApplication sharedApplication] setStatusBarHidden:NO]; // 2.0 - 3.2
 	}
     
 	[self.navigationController setNavigationBarHidden:NO animated:YES];
@@ -844,7 +846,7 @@
 
 - (void)unloadFullsizeImageWithIndex:(NSUInteger)index
 {
-	if( index >= 0 && index < [_photoViews count])
+	if( index < [_photoViews count])
 	{
 //		NSLog(@"unloadFullsizeImageWithIndex: %i", index);
 		
@@ -865,11 +867,17 @@
 	NSString *thumbPath;
 	NSString *fullsizePath;
 	
-	if( sourceType == FGalleryPhotoSourceTypeLocal )
+	if( sourceType == FGalleryPhotoSourceTypeLocal || sourceType == FGalleryPhotoSourceTypeDocuments )
 	{
 		thumbPath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
 		fullsizePath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeFullsize atIndex:index];
-		photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+        
+//		photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+        if (sourceType == FGalleryPhotoSourceTypeDocuments) {
+            photo = [[[FGalleryPhoto alloc] initFromDocumentsWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+        } else {
+            photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+        }
 	}
 	else if( sourceType == FGalleryPhotoSourceTypeNetwork )
 	{
