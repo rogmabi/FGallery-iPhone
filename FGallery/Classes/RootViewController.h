@@ -9,17 +9,20 @@
 #import <UIKit/UIKit.h>
 #import "FGalleryViewController.h"
 
-@interface RootViewController : UITableViewController <FGalleryViewControllerDelegate> {
+@interface RootViewController : UITableViewController <FGalleryViewControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
 	NSArray *localCaptions;
     NSArray *localImages;
     NSArray *networkCaptions;
     NSArray *networkImages;
-    NSArray *documentsCaptions;
-    NSArray *documentsImages;
+    NSMutableArray *documentsCaptions;
+    NSMutableArray *documentsImages;
     NSUInteger imageCount;
 	FGalleryViewController *localGallery;
     FGalleryViewController *networkGallery;
     FGalleryViewController *documentsGallery;
+    
 }
+
+- (void)loadCamera:(id)sender;
 
 @end

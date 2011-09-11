@@ -140,21 +140,10 @@
     if (_loadsFromDocuments) {
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths lastObject];
-        BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:documentsDirectory];
-#warning FIX: can't read from Documents Directory...............
-        NSString *path = [NSString stringWithFormat:@"%@%@", documentsDirectory, _fullsizeUrl];
-        NSLog(@"%@", path);
-        NSLog(@"%@", documentsDirectory);
-//        NSString *keysPath = [documentsDirectory stringByAppendingPathComponent:@"866/periodic/bathroom"];
-        NSArray *content = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectory error:nil];
-        NSLog(@"content of directory %@:\n%@",documentsDirectory, content);
-
-//        NSLog(@"%@", keysPath);
-//        exists = [[NSFileManager defaultManager] fileExistsAtPath:keysPath];
-        
+        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:_fullsizeUrl];
+        BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:imagePath];
         if (exists) {
-            _fullsize = [[UIImage imageWithContentsOfFile:path] retain];
-            NSLog(@"%@", [_fullsize description]);
+            _fullsize = [[UIImage imageWithContentsOfFile:imagePath] retain];
         } else {
             NSLog(@"file does not exist");
         }
@@ -175,9 +164,22 @@
 - (void)loadThumbnailInThread
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] bundlePath], _thumbUrl];
-	_thumbnail = [[UIImage imageWithContentsOfFile:path] retain];
+    
+    if (_loadsFromDocuments) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths lastObject];
+        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:_thumbUrl];
+        BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:imagePath];
+        if (exists) {
+            _thumbnail = [[UIImage imageWithContentsOfFile:imagePath] retain];
+        } else {
+            NSLog(@"file does not exist");
+        }
+    }
+	else {
+        NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] bundlePath], _thumbUrl];
+        _thumbnail = [[UIImage imageWithContentsOfFile:path] retain];
+    }
 	
 	_hasThumbLoaded = YES;
 	_isThumbLoading = NO;

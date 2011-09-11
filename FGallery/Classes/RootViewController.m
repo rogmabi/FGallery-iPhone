@@ -11,7 +11,6 @@
 
 @implementation RootViewController
 
-
 #pragma mark - View lifecycle
 
 - (void)loadView {
@@ -25,9 +24,86 @@
     networkCaptions = [[NSArray alloc] initWithObjects:@"Winter spider", @"Happy New Year!",nil];
     networkImages = [[NSArray alloc] initWithObjects:@"http://farm6.static.flickr.com/5042/5323996646_9c11e1b2f6_b.jpg", @"http://farm6.static.flickr.com/5007/5311573633_3cae940638.jpg",nil];
     
-    documentsCaptions = [[NSArray alloc] initWithObjects:@"photo1.jpg", @"photo2.jpg", nil];
-    documentsImages = [[NSArray alloc] initWithObjects:@"/866/periodic/keys/photo1.jpg", @"/866/periodic/bathroom/photo2.jpg", nil];
+    documentsCaptions = [[NSMutableArray alloc] init];
+    documentsImages = [[NSMutableArray alloc] init];
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self.tableView reloadData];
+}
+
+#pragma mark - Camera
+
+- (IBAction)loadCamera:(id)sender {
+    // Create image picker controller
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    
+    // Set source to the camera
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        imagePicker.sourceType =  UIImagePickerControllerSourceTypeCamera;
+        // Delegate is self
+        imagePicker.delegate = self;
+        
+        // Allow editing of image ?
+        imagePicker.allowsEditing = NO;
+        
+        // Show image picker
+        [self presentModalViewController:imagePicker animated:YES];
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Camera Available" 
+                                                        message:@"Unable to start the camera." 
+                                                       delegate:self cancelButtonTitle:@"Ok" 
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    }
+}
+
+#pragma mark - UIImagePickerController Delegate Methods
+
+- (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    BOOL success = NO;
+    
+    //get saving path
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    if (paths) {
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:@"latestPhoto.png"];
+        
+        //extract image from the picker and save it to imagePath
+        NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];   
+        if ([mediaType isEqualToString:@"public.image"]){
+            UIImage *originalImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+#warning TODO: make new thread here to save image, or may be for PNG conversion here above...
+            NSData *PNGImageData = UIImagePNGRepresentation(originalImage);
+            
+            success = [[NSFileManager defaultManager] createFileAtPath:imagePath 
+                                                              contents:PNGImageData 
+                                                            attributes:nil];
+            
+            if (!success) {
+                NSLog(@"error saving image");
+            }
+        } else {
+            NSLog(@"Error, image is not public");
+        }
+    } else {
+        NSLog(@"Error no document's directory");
+    }
+    
+    if (success) {
+        NSLog(@"photo saved");
+        [documentsImages addObject:@"latestPhoto.png"];
+        [documentsCaptions addObject:@"latestPhoto.png"];
+    }
+    
+    // now, we can remove the picker
+    [self dismissModalViewControllerAnimated:YES];
+    
+	[picker release];
+}
+
 
 #pragma mark - Table view data source
 
@@ -39,7 +115,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return 5;
 }
 
 
@@ -64,7 +140,20 @@
 		cell.textLabel.text = @"Custom Controls";
 	}
     else if( indexPath.row == 3 ) {
-        cell.textLabel.text = @"Documents Gallery";
+//        if (![documentsImages count]) {
+//            [cell setUserInteractionEnabled:NO];
+//            [cell.textLabel setTextColor:[UIColor grayColor]];
+//            [cell.textLabel setText:@"Document Gallery is empty"];
+//        }
+//        else {
+//            [cell setUserInteractionEnabled:YES];
+//            [cell.textLabel setTextColor:[UIColor blackColor]];
+//            [cell.textLabel setText:@"Document Gallery"];
+//        }
+        [cell.textLabel setText:@"Document Gallery"];
+    }
+    else if( indexPath.row == 4) {
+        cell.textLabel.text = @"take a picture";
     }
 
     return cell;
@@ -145,8 +234,6 @@
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	
-    
     
 	if( indexPath.row == 0 ) {
 		localGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
@@ -177,6 +264,9 @@
         [self.navigationController pushViewController:documentsGallery animated:YES];
         [documentsGallery release];
         imageCount = [documentsImages count];
+    }
+    else if (indexPath.row == 4) {
+        [self loadCamera:nil];
     }
 }
 

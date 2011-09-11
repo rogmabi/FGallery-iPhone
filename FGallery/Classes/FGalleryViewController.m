@@ -211,7 +211,7 @@
 	// add top right nav button for thumbs view
 	if( self.navigationController )
 	{
-		UIBarButtonItem *btn = [[[UIBarButtonItem alloc] initWithTitle:@"See All" style:UIBarButtonSystemItemDone target:self action:@selector(handleSeeAllTouch:)] autorelease];
+		UIBarButtonItem *btn = [[[UIBarButtonItem alloc] initWithTitle:@"See All" style:UIBarButtonItemStyleDone target:self action:@selector(handleSeeAllTouch:)] autorelease];
 		[self.navigationItem setRightBarButtonItem:btn animated:YES];
 	}
 	
@@ -225,11 +225,11 @@
 	[self buildThumbsViewPhotos];
 	
 	// start loading thumbs
-	[self preloadThumbnailImages];
+    if ([_photoViews count]) {
+        [self preloadThumbnailImages];
+    }
+	
 }
-
-
-
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -879,6 +879,18 @@
             photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
         }
 	}
+//    else if ( sourceType == FGalleryPhotoSourceTypeDocuments )
+//    {
+//        thumbPath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
+//		fullsizePath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeFullsize atIndex:index];
+//        
+//        //		photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+//        if (sourceType == FGalleryPhotoSourceTypeDocuments) {
+//            photo = [[[FGalleryPhoto alloc] initFromDocumentsWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+//        } else {
+//            photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+//        }
+//    }
 	else if( sourceType == FGalleryPhotoSourceTypeNetwork )
 	{
 		thumbPath = [_photoSource photoGallery:self urlForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
@@ -1227,7 +1239,6 @@
 		}
 	}
 }
-
 
 @end
 
