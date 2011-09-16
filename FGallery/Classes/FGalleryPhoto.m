@@ -145,7 +145,7 @@
         if (exists) {
             _fullsize = [[UIImage imageWithContentsOfFile:imagePath] retain];
         } else {
-            NSLog(@"file does not exist");
+            NSLog(@"file does not exist: %@", imagePath);
         }
     } else {
         NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] bundlePath], _fullsizeUrl];
