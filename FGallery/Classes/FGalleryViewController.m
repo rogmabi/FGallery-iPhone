@@ -833,7 +833,6 @@
 - (void)loadFullsizeImageWithIndex:(NSUInteger)index
 {
 //	NSLog(@"loadFullsizeImageWithIndex: %i", index );
-#warning Do this using GCD
     dispatch_queue_t loadQueue = dispatch_queue_create("image loading queue", NULL);
     dispatch_async(loadQueue, ^{
         FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
