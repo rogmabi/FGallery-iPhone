@@ -313,7 +313,7 @@
 	// don't continue if we're out of images.
 	if( nextIndex >= numberOfPhotos )
 	{
-		nextIndex = numberOfPhotos-1;
+//		nextIndex = numberOfPhotos-1;
 		return;
 	}
 	
@@ -410,12 +410,12 @@
 	CGRect screenFrame = [[UIScreen mainScreen] bounds];
 	CGRect innerContainerRect;
 	
-	if( self.interfaceOrientation == UIInterfaceOrientationPortrait )
+	if( self.interfaceOrientation == UIInterfaceOrientationPortrait || self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown )
 	{
 		innerContainerRect = CGRectMake( 0, _container.frame.size.height - screenFrame.size.height, _container.frame.size.width, screenFrame.size.height );
 	}
-	else if( self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft 
-			|| self.interfaceOrientation == UIInterfaceOrientationLandscapeRight )
+	else //if( self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft 
+			//|| self.interfaceOrientation == UIInterfaceOrientationLandscapeRight )
 	{
 		innerContainerRect = CGRectMake( 0, _container.frame.size.height - screenFrame.size.width, _container.frame.size.width, screenFrame.size.width );
 	}
@@ -428,12 +428,12 @@
 	CGRect screenFrame = [[UIScreen mainScreen] bounds];
 	CGRect scrollerRect;
 	
-	if( self.interfaceOrientation == UIInterfaceOrientationPortrait )
+	if( self.interfaceOrientation == UIInterfaceOrientationPortrait || self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown)
 	{
 		scrollerRect = CGRectMake( 0, 0, screenFrame.size.width, screenFrame.size.height );
 	}
-	else if( self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft 
-			|| self.interfaceOrientation == UIInterfaceOrientationLandscapeRight )
+	else //if( self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft 
+			//|| self.interfaceOrientation == UIInterfaceOrientationLandscapeRight )
 	{
 		scrollerRect = CGRectMake( 0, 0, screenFrame.size.height, screenFrame.size.width );
 	}
@@ -763,7 +763,7 @@
 	{
 //		NSLog(@"preloading current image thumbnail!");
 		[self loadThumbnailImageWithIndex:index];
-		photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
+//		photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
 	}
 	else if( !photo.hasThumbLoaded && !photo.isThumbLoading )
 		[photo loadThumbnail];
@@ -776,7 +776,7 @@
 		
 		if( !photo ) {
 			[self loadThumbnailImageWithIndex:curIndex];
-			photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
+//			photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
 		}
 		
 		else if( !photo.hasThumbLoaded && !photo.isThumbLoading )
@@ -794,7 +794,7 @@
 		
 		if( !photo ) {
 			[self loadThumbnailImageWithIndex:curIndex];
-			photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
+//			photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
 		}
 		
 		else if( !photo.hasThumbLoaded && !photo.isThumbLoading )
