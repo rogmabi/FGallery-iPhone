@@ -605,6 +605,13 @@
     } else if (_currentIndex == 0) {
         _prevButton.enabled = NO;
     }
+    if (![_photoViews count]) {
+        NSEnumerator *e = [self.toolBar.items objectEnumerator];
+        id item;
+        while (item = [e nextObject]) {
+            [item setEnabled:NO];
+        }
+    }
 }
 
 - (void)layoutButtons
