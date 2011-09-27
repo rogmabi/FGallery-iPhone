@@ -299,6 +299,15 @@
 	[_photoThumbnailViews removeObjectAtIndex:index];
 	[_photoLoaders removeObjectForKey:[NSString stringWithFormat:@"%i",index]];
 	
+    if (index != 0) {
+        [self previous];
+    } else {
+        [self next];
+    }
+    if ([_photoViews count] == 0) {
+        
+    }
+    
 	[self layoutViews];
 	[self updateButtons];
     [self updateTitle];
@@ -563,6 +572,9 @@
 			}
 		}
 	}
+    if (![_photoViews count]) {
+        _captionContainer.hidden = YES;
+    }
 }
 
 
@@ -575,7 +587,11 @@
 
 - (void)updateTitle
 {
-	[self setTitle:[NSString stringWithFormat:@"%i of %i", _currentIndex+1, [_photoSource numberOfPhotosForPhotoGallery:self]]];
+    if ([_photoViews count] !=0) {
+        [self setTitle:[NSString stringWithFormat:@"%i of %i", _currentIndex+1, [_photoViews count]]];
+    } else {
+        [self setTitle:[NSString stringWithFormat:@"%i of %i", 0, 0]];
+    }
 }
 
 
@@ -584,6 +600,11 @@
 {
 	_prevButton.enabled = ( _currentIndex <= 0 ) ? NO : YES;
 	_nextButton.enabled = ( _currentIndex >= [_photoSource numberOfPhotosForPhotoGallery:self]-1 ) ? NO : YES;
+    if (_currentIndex+1 == [_photoViews count]) {
+        _nextButton.enabled = NO;
+    } else if (_currentIndex == 0) {
+        _prevButton.enabled = NO;
+    }
 }
 
 - (void)layoutButtons
