@@ -199,9 +199,17 @@
 	_nextButton = [[UIBarButtonItem alloc] initWithImage:rightIcon style:UIBarButtonItemStylePlain target:self action:@selector(next)];
 	_prevButton = [[UIBarButtonItem alloc] initWithImage:leftIcon style:UIBarButtonItemStylePlain target:self action:@selector(previous)];
 	
-	// add prev next to front of the array
-	[_barItems insertObject:_nextButton atIndex:0];
-	[_barItems insertObject:_prevButton atIndex:0];
+    if ([_barItems objectAtIndex:0]) {
+        UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] 
+                                           initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+        [_barItems insertObject:_nextButton atIndex:1];
+        [_barItems insertObject:_prevButton atIndex:1];
+        [_barItems insertObject:flexibleSpace atIndex:1];
+    } else {
+        // add prev next to front of the array
+        [_barItems insertObject:_nextButton atIndex:0];
+        [_barItems insertObject:_prevButton atIndex:0];
+    }
 	
 	_prevNextButtonSize = leftIcon.size.width;
 	
