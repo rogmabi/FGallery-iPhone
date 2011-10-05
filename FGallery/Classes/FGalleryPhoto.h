@@ -73,14 +73,15 @@
 @protocol FGalleryPhotoDelegate
 
 @required
-- (void)galleryPhoto:(FGalleryPhoto*)photo didLoadThumbnail:(UIImage*)image;
-- (void)galleryPhoto:(FGalleryPhoto*)photo didLoadFullsize:(UIImage*)image;
+- (void)galleryPhoto:(FGalleryPhoto *)photo didLoadThumbnail:(UIImage*)image;
+- (void)galleryPhoto:(FGalleryPhoto *)photo didLoadFullsize:(UIImage*)image;
 
 @optional
-- (void)galleryPhoto:(FGalleryPhoto*)photo willLoadThumbnailFromUrl:(NSString*)url;
-- (void)galleryPhoto:(FGalleryPhoto*)photo willLoadFullsizeFromUrl:(NSString*)url;
+- (void)galleryPhoto:(FGalleryPhoto *)photo willLoadThumbnailFromUrl:(NSString*)url;
+- (void)galleryPhoto:(FGalleryPhoto *)photo willLoadFullsizeFromUrl:(NSString*)url;
 
-- (void)galleryPhoto:(FGalleryPhoto*)photo willLoadThumbnailFromPath:(NSString*)path;
-- (void)galleryPhoto:(FGalleryPhoto*)photo willLoadFullsizeFromPath:(NSString*)path;
+- (void)galleryPhoto:(FGalleryPhoto *)photo willLoadThumbnailFromPath:(NSString*)path;
+- (void)galleryPhoto:(FGalleryPhoto *)photo willLoadFullsizeFromPath:(NSString*)path;
+- (void)galleryPhoto:(FGalleryPhoto *)photo willLoadFullsizeOptimizedFromPath:(NSString *)path;
 
 @end

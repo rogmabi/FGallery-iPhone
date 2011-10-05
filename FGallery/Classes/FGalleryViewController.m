@@ -308,6 +308,12 @@
         
     }
     
+    if ([_photoViews count] <= 1) {
+        _scroller.pagingEnabled = NO;
+    } else {
+        _scroller.pagingEnabled = YES;
+    }
+    
 	[self layoutViews];
 	[self updateButtons];
     [self updateTitle];
@@ -860,7 +866,7 @@
 
 - (void)loadFullsizeImageWithIndex:(NSUInteger)index
 {
-//	NSLog(@"loadFullsizeImageWithIndex: %i", index );
+	NSLog(@"loadFullsizeImageWithIndex: %i", index );
     dispatch_queue_t loadQueue = dispatch_queue_create("image loading queue", NULL);
     dispatch_async(loadQueue, ^{
         FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
@@ -982,12 +988,12 @@
 	}
 }
 
-/*
+
 - (void)galleryPhoto:(FGalleryPhoto*)photo willLoadFullsizeFromPath:(NSString*)path
 {
-//	NSLog(@"galleryPhoto:willLoadFullsizeFromPath: %@", path );
+	NSLog(@"galleryPhoto:willLoadFullsizeFromPath: %@", path );
 }
-*/
+
 
 
 - (void)galleryPhoto:(FGalleryPhoto*)photo willLoadThumbnailFromUrl:(NSString*)url
