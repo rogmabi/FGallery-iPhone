@@ -226,7 +226,23 @@
 	
 	// create layer for the thumbnails
 	_isThumbViewShowing = NO;
-	
+    
+    // let's do this in a new thread
+    dispatch_queue_t buildViews = dispatch_queue_create("buildViews", NULL);
+    dispatch_async(buildViews, ^{
+        // tell thumbs that havent loaded to load
+        // create the image views for each photo
+        [self buildViews];
+        
+        // create the thumbnail views
+        [self buildThumbsViewPhotos];
+    });
+    dispatch_release(buildViews);
+    
+    // start loading thumbs
+    if ([_photoViews count]) {
+        [self preloadThumbnailImages];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -248,22 +264,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    // let's do this in a new thread
-    dispatch_queue_t thumbViewQueue = dispatch_queue_create("ThumbViewQueue", NULL);
-    dispatch_async(thumbViewQueue, ^{
-        // tell thumbs that havent loaded to load
-        // create the image views for each photo
-        [self buildViews];
-        
-        // create the thumbnail views
-        [self buildThumbsViewPhotos];
-        
-        // start loading thumbs
-        if ([_photoViews count]) {
-            [self preloadThumbnailImages];
-        }
-    });
-    dispatch_release(thumbViewQueue);
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
