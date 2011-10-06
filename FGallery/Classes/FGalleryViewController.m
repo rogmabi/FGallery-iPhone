@@ -205,6 +205,7 @@
         [_barItems insertObject:_nextButton atIndex:1];
         [_barItems insertObject:_prevButton atIndex:1];
         [_barItems insertObject:flexibleSpace atIndex:1];
+        [flexibleSpace release];
     } else {
         // add prev next to front of the array
         [_barItems insertObject:_nextButton atIndex:0];
@@ -655,8 +656,13 @@
 	// show thumb view
 	[self toggleThumbView];
 	
-	// tell thumbs that havent loaded to load
-	[self loadAllThumbViewPhotos];
+    // let's do this in a new thread
+    dispatch_queue_t thumbViewQueue = dispatch_queue_create("ThumbViewQueue", NULL);
+    dispatch_async(thumbViewQueue, ^{
+        // tell thumbs that havent loaded to load
+        [self loadAllThumbViewPhotos];
+    });
+    dispatch_release(thumbViewQueue);
 }
 
 
@@ -731,9 +737,19 @@
 	if( !_isThumbViewShowing ) 
 	{
 		_isThumbViewShowing = YES;
-		[self arrangeThumbs];
-		[self uncurlThumbView];
-		[self.navigationItem.rightBarButtonItem setTitle:@"Done"];
+        // we can already show the thumbView
+        [self uncurlThumbView];
+        [self.navigationItem.rightBarButtonItem setTitle:@"Done"];
+        
+        // let's do this in a new thread with GCD
+        dispatch_queue_t thumbViewQueue = dispatch_queue_create("ThumbViewQueue", NULL);
+        dispatch_async(thumbViewQueue, ^{
+            [self arrangeThumbs];
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                
+//            });
+        });
+        dispatch_release(thumbViewQueue);
 	}
 	else 
 	{
@@ -922,18 +938,7 @@
             photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
         }
 	}
-//    else if ( sourceType == FGalleryPhotoSourceTypeDocuments )
-//    {
-//        thumbPath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
-//		fullsizePath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeFullsize atIndex:index];
-//        
-//        //		photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
-//        if (sourceType == FGalleryPhotoSourceTypeDocuments) {
-//            photo = [[[FGalleryPhoto alloc] initFromDocumentsWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
-//        } else {
-//            photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
-//        }
-//    }
+    
 	else if( sourceType == FGalleryPhotoSourceTypeNetwork )
 	{
 		thumbPath = [_photoSource photoGallery:self urlForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
