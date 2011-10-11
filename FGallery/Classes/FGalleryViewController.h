@@ -90,11 +90,14 @@ typedef enum
 
 @property (readonly) BOOL isDocumentsGallery;
 
+@property (nonatomic, retain) NSMutableArray *_barItems;
 @property (nonatomic,assign) NSObject<FGalleryViewControllerDelegate> *photoSource;
 @property (nonatomic,readonly) UIToolbar *toolBar;
 @property (nonatomic,readonly) UIView* thumbsView;
 @property NSInteger currentIndex;
 @property (nonatomic,retain) NSString *galleryID;
+
+- (void)refreshBarButtonItems;
 
 @end
 

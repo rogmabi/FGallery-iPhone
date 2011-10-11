@@ -70,6 +70,7 @@
 
 @implementation FGalleryViewController
 
+@synthesize _barItems;
 @synthesize isDocumentsGallery;
 @synthesize galleryID;
 @synthesize photoSource = _photoSource, currentIndex = _currentIndex, thumbsView = _thumbsView, toolBar = _toolbar;
@@ -410,7 +411,9 @@
 	
 	[self resizeImageViewsWithRect:_scroller.frame];
 	
-	[self layoutButtons];
+    if ([_barItems count]) {
+        [self layoutButtons];
+    }
 	
 	[self arrangeThumbs];
 	
@@ -633,15 +636,17 @@
 
 - (void)layoutButtons
 {
-	NSUInteger buttonWidth = roundf( _toolbar.frame.size.width / [_barItems count] - _prevNextButtonSize * .5);
-	
-	// loop through all the button items and give them the same width
-	NSUInteger i, count = [_barItems count];
-	for (i = 0; i < count; i++) {
-		UIBarButtonItem *btn = [_barItems objectAtIndex:i];
-		btn.width = buttonWidth;
-	}
-	[_toolbar setNeedsLayout];
+    if (_barItems && [_barItems count]) {
+        NSUInteger buttonWidth = roundf( _toolbar.frame.size.width / [_barItems count] - _prevNextButtonSize * .5);
+        
+        // loop through all the button items and give them the same width
+        NSUInteger i, count = [_barItems count];
+        for (i = 0; i < count; i++) {
+            UIBarButtonItem *btn = [_barItems objectAtIndex:i];
+            btn.width = buttonWidth;
+        }
+        [_toolbar setNeedsLayout];
+    }
 }
 
 - (void)moveScrollerToCurrentIndexWithAnimation:(BOOL)animation
@@ -1135,6 +1140,10 @@
     // e.g. self.myOutlet = nil;
 }
 */
+
+- (void)refreshBarButtonItems {
+    [self layoutButtons];
+}
 
 - (void)dealloc {	
 	
