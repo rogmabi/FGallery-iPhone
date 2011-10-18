@@ -206,7 +206,6 @@
         [_barItems insertObject:_nextButton atIndex:1];
         [_barItems insertObject:_prevButton atIndex:1];
         [_barItems insertObject:flexibleSpace atIndex:1];
-        [flexibleSpace release];
     } else {
         // add prev next to front of the array
         [_barItems insertObject:_nextButton atIndex:0];
@@ -221,7 +220,7 @@
 	// add top right nav button for thumbs view
 	if( self.navigationController )
 	{
-		UIBarButtonItem *btn = [[[UIBarButtonItem alloc] initWithTitle:@"See All" style:UIBarButtonItemStyleDone target:self action:@selector(handleSeeAllTouch:)] autorelease];
+		UIBarButtonItem *btn = [[UIBarButtonItem alloc] initWithTitle:@"See All" style:UIBarButtonItemStyleDone target:self action:@selector(handleSeeAllTouch:)];
 		[self.navigationItem setRightBarButtonItem:btn animated:YES];
 	}
 	
@@ -686,7 +685,6 @@
 		photoView.photoDelegate = self;
 		[_scroller addSubview:photoView];
 		[_photoViews addObject:photoView];
-		[photoView release];
 	}
 }
 
@@ -703,7 +701,6 @@
 		[thumbView setTag:i];
 		[_thumbsView addSubview:thumbView];
 		[_photoThumbnailViews addObject:thumbView];
-		[thumbView release];
 	}
 }
 
@@ -940,9 +937,9 @@
         
 //		photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
         if (sourceType == FGalleryPhotoSourceTypeDocuments) {
-            photo = [[[FGalleryPhoto alloc] initFromDocumentsWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+            photo = [[FGalleryPhoto alloc] initFromDocumentsWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self];
         } else {
-            photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+            photo = [[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self];
         }
 	}
     
@@ -950,7 +947,7 @@
 	{
 		thumbPath = [_photoSource photoGallery:self urlForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
 		fullsizePath = [_photoSource photoGallery:self urlForPhotoSize:FGalleryPhotoSizeFullsize atIndex:index];
-		photo = [[[FGalleryPhoto alloc] initWithThumbnailUrl:thumbPath fullsizeUrl:fullsizePath delegate:self] autorelease];
+		photo = [[FGalleryPhoto alloc] initWithThumbnailUrl:thumbPath fullsizeUrl:fullsizePath delegate:self];
 	}
 	else 
 	{
@@ -1164,54 +1161,38 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	self.galleryID = nil;
 	
 	_photoSource = nil;
 	
-    [_caption release];
     _caption = nil;
 	
-    [_captionContainer release];
     _captionContainer = nil;
 	
-    [_container release];
     _container = nil;
 	
-    [_innerContainer release];
     _innerContainer = nil;
 	
-    [_toolbar release];
     _toolbar = nil;
 	
-    [_thumbsView release];
     _thumbsView = nil;
 	
-    [_scroller release];
     _scroller = nil;
 	
 	[_photoLoaders removeAllObjects];
-    [_photoLoaders release];
     _photoLoaders = nil;
 	
 	[_barItems removeAllObjects];
-	[_barItems release];
-	_barItems = nil;
 	
 	[_photoThumbnailViews removeAllObjects];
-    [_photoThumbnailViews release];
     _photoThumbnailViews = nil;
 	
 	[_photoViews removeAllObjects];
-    [_photoViews release];
     _photoViews = nil;
 	
-    [_nextButton release];
     _nextButton = nil;
 	
-    [_prevButton release];
     _prevButton = nil;
 	
-    [super dealloc];
 }
 
 

@@ -36,7 +36,7 @@
 	UIImage *_thumbnail;
 	UIImage *_fullsize;
 	
-	NSObject <FGalleryPhotoDelegate> *_delegate;
+	NSObject <FGalleryPhotoDelegate> *__unsafe_unretained _delegate;
 	
 	NSUInteger tag;
 }
@@ -62,10 +62,10 @@
 
 @property (readwrite) BOOL loadsFromDocuments;
 
-@property (nonatomic,retain) UIImage *thumbnail;
-@property (nonatomic,retain) UIImage *fullsize;
+@property (nonatomic,strong) UIImage *thumbnail;
+@property (nonatomic,strong) UIImage *fullsize;
 
-@property (nonatomic,assign) NSObject<FGalleryPhotoDelegate> *delegate;
+@property (nonatomic,unsafe_unretained) NSObject<FGalleryPhotoDelegate> *delegate;
 
 @end
 

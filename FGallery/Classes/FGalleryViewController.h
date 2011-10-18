@@ -71,7 +71,7 @@ typedef enum
 	
 	NSMutableArray *_photoViews;
 	
-	NSObject <FGalleryViewControllerDelegate> *_photoSource;
+	NSObject <FGalleryViewControllerDelegate> *__unsafe_unretained _photoSource;
 	
 	UIBarButtonItem *_nextButton;
 	
@@ -90,12 +90,12 @@ typedef enum
 
 @property (readonly) BOOL isDocumentsGallery;
 
-@property (nonatomic, retain) NSMutableArray *_barItems;
-@property (nonatomic,assign) NSObject<FGalleryViewControllerDelegate> *photoSource;
+@property (nonatomic, strong) NSMutableArray *_barItems;
+@property (nonatomic,unsafe_unretained) NSObject<FGalleryViewControllerDelegate> *photoSource;
 @property (nonatomic,readonly) UIToolbar *toolBar;
 @property (nonatomic,readonly) UIView* thumbsView;
 @property NSInteger currentIndex;
-@property (nonatomic,retain) NSString *galleryID;
+@property (nonatomic,strong) NSString *galleryID;
 
 - (void)refreshBarButtonItems;
 
