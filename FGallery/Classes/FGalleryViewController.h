@@ -88,6 +88,8 @@ typedef enum
 - (void)previous;
 - (void)gotoImageByIndex:(NSUInteger)index animated:(BOOL)animated;
 
+- (void)layoutViews;
+
 @property (readonly) BOOL isDocumentsGallery;
 
 @property (nonatomic, strong) NSMutableArray *_barItems;
