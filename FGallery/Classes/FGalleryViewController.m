@@ -229,13 +229,18 @@
     
     [self buildViews];
     
-    // create the thumbnail views
-    [self buildThumbsViewPhotos];
+    dispatch_queue_t buildThumbs = dispatch_queue_create("buildThumbs", NULL);
+    dispatch_async(buildThumbs, ^{
+        // create the thumbnail views
+        [self buildThumbsViewPhotos];
+        
+        // start loading thumbs
+        if ([_photoViews count]) {
+            [self preloadThumbnailImages];
+        }
+    });
+    dispatch_release(buildThumbs);
     
-    // start loading thumbs
-    if ([_photoViews count]) {
-        [self preloadThumbnailImages];
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -1115,15 +1120,15 @@
 		{
 			FGalleryPhoto *photo = [_photoLoaders objectForKey:[keys objectAtIndex:i]];
 			[photo unloadFullsize];
-//			[photo unloadThumbnail];
+			[photo unloadThumbnail];
 			
 			// unload main image thumb
 			FGalleryPhotoView *photoView = [_photoViews objectAtIndex:i];
 			photoView.imageView.image = nil;
 			
 			// unload thumb tile
-//			photoView = [_photoThumbnailViews objectAtIndex:i];
-//			photoView.imageView.image = nil;
+			photoView = [_photoThumbnailViews objectAtIndex:i];
+			photoView.imageView.image = nil;
 		}
 	}
 	
