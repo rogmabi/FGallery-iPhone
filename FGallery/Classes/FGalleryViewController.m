@@ -1,4 +1,4 @@
-//
+
 //  FGalleryViewController.m
 //  TNF_Trails
 //
@@ -297,7 +297,7 @@
 	}
 }
 
-
+#warning FIX: removing image at index != lastIndex is buggy
 - (void)removeImageAtIndex:(NSUInteger)index
 {
 	// remove the image and thumbnail at the specified index.
@@ -316,13 +316,17 @@
 	[_photoLoaders removeObjectForKey:[NSString stringWithFormat:@"%i",index]];
 	
     if (index != 0) {
-        [self previous];
+        [self moveScrollerToCurrentIndexWithAnimation:YES];
+        _currentIndex = index-1;
     } else {
-        [self next];
+        // first image, _currentIndex is unchanged
+        if (![_photoViews count]) {
+            [self.navigationController popViewControllerAnimated:YES];
+            return;
+        }
     }
-    if ([_photoViews count] == 0) {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+    
+    [self loadFullsizeImageWithIndex:_currentIndex];
     
     if ([_photoViews count] <= 1) {
         _scroller.pagingEnabled = NO;
@@ -333,6 +337,7 @@
 	[self layoutViews];
 	[self updateButtons];
     [self updateTitle];
+    
 }
 
 
@@ -370,28 +375,35 @@
 	// constrain index within our limits
     if( index >= numPhotos ) index = numPhotos - 1;
 	
-	
 	if( numPhotos == 0 ) {
 		
 		// no photos!
 		_currentIndex = -1;
 	}
 	else {
-		
 		// clear the fullsize image in the old photo
-		[self unloadFullsizeImageWithIndex:_currentIndex];
-		
-		_currentIndex = index;
+        if (_currentIndex != 0) {
+            [self unloadFullsizeImageWithIndex:_currentIndex];
+        }
+        
+        // now change the currentIndex
+        _currentIndex = index;
+        
 		[self moveScrollerToCurrentIndexWithAnimation:animated];
-		[self updateTitle];
-		
+        
+        // now update the title
+        [self updateTitle];
+        
 		if( !animated )	{
 			[self preloadThumbnailImages];
 			[self loadFullsizeImageWithIndex:index];
 		}
 	}
-	[self updateButtons];
-	[self updateCaption];
+    
+    if ([_photoViews count]) {
+        [self updateButtons];
+        [self updateCaption];
+    }
 }
 
 

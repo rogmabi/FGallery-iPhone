@@ -101,7 +101,13 @@
 		_isThumbLoading = YES;
 		
 		// spawn a new thread to load from disk
-		[NSThread detachNewThreadSelector:@selector(loadThumbnailInThread) toTarget:self withObject:nil];
+        // let's do this in a new thread
+        dispatch_queue_t loadThumbnailQueue = dispatch_queue_create("loadThumbnailQueue", NULL);
+        dispatch_async(loadThumbnailQueue, ^{
+            // tell thumbs that havent loaded to load
+            [self loadThumbnailInThread];
+        });
+        dispatch_release(loadThumbnailQueue);
 	}
 }
 
@@ -176,26 +182,11 @@
                 // make a copy from the file on disk
                 UIImage *fullImage = [UIImage imageWithContentsOfFile:imagePath];
                 
-//                CGRect square;
-//                // get the smallest between height and width
-//                if (fullImage.size.width > fullImage.size.height) {
-//                    square = CGRectMake(0.0, 0.0, fullImage.size.height, fullImage.size.height);
-//                } else {
-//                    square = CGRectMake(0.0, 0.0, fullImage.size.width, fullImage.size.width);
-//                }
-//                
-//                CGFloat scale = kThumbSize / square.size.width;
-//                NSLog(@"scale is: %f", scale);
-//                
-//                // now we crop the image
-//                CGImageRef imageRef = CGImageCreateWithImageInRect([fullImage CGImage], square);
-//                UIImage *croppedImage = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
-//                CGImageRelease(imageRef);
-//                // now grab the PNG representation of our image
-//                NSData *thumbData = UIImagePNGRepresentation(croppedImage);
-                
                 CGRect rect = CGRectMake(0.0, 0.0, fullImage.size.width, fullImage.size.height);
+                UIGraphicsBeginImageContext(fullImage.size);
                 [fullImage drawInRect:rect];
+                UIGraphicsEndImageContext();
+                
                 _thumbnail = fullImage;
                 
             } else {
