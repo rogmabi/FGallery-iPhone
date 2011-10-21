@@ -88,7 +88,9 @@ typedef enum
 - (void)previous;
 - (void)gotoImageByIndex:(NSUInteger)index animated:(BOOL)animated;
 
+// methods added by Roger
 - (void)layoutViews;
+- (void)doRemovalTransitionFromIndex:(NSUInteger)index;
 
 @property (readonly) BOOL isDocumentsGallery;
 

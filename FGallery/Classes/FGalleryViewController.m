@@ -297,7 +297,6 @@
 	}
 }
 
-#warning FIX: removing image at index != lastIndex is buggy
 - (void)removeImageAtIndex:(NSUInteger)index
 {
 	// remove the image and thumbnail at the specified index.
@@ -314,29 +313,6 @@
 	[_photoViews removeObjectAtIndex:index];
 	[_photoThumbnailViews removeObjectAtIndex:index];
 	[_photoLoaders removeObjectForKey:[NSString stringWithFormat:@"%i",index]];
-	
-    if (index != 0) {
-        [self moveScrollerToCurrentIndexWithAnimation:YES];
-        _currentIndex = index-1;
-    } else {
-        // first image, _currentIndex is unchanged
-        if (![_photoViews count]) {
-            [self.navigationController popViewControllerAnimated:YES];
-            return;
-        }
-    }
-    
-    [self loadFullsizeImageWithIndex:_currentIndex];
-    
-    if ([_photoViews count] <= 1) {
-        _scroller.pagingEnabled = NO;
-    } else {
-        _scroller.pagingEnabled = YES;
-    }
-    
-	[self layoutViews];
-	[self updateButtons];
-    [self updateTitle];
     
 }
 
@@ -434,6 +410,34 @@
 	[self arrangeThumbs];
 	
 	[self moveScrollerToCurrentIndexWithAnimation:NO];
+}
+
+
+- (void)doRemovalTransitionFromIndex:(NSUInteger)index {
+    if (index != 0) {
+        [self moveScrollerToCurrentIndexWithAnimation:YES];
+        _currentIndex = index-1;
+    } else {
+        _currentIndex = index;
+        // first image, _currentIndex is unchanged
+        if (![_photoViews count]) {
+            [self.navigationController popViewControllerAnimated:YES];
+            return;
+        }
+    }
+    
+    [self loadFullsizeImageWithIndex:_currentIndex];
+    
+    if ([_photoViews count] <= 1) {
+        _scroller.pagingEnabled = NO;
+    } else {
+        _scroller.pagingEnabled = YES;
+    }
+    
+    [self layoutViews];
+    [self updateButtons];
+    [self updateTitle];
+
 }
 
 
