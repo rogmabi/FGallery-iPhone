@@ -185,6 +185,7 @@
                 }
                 
                 CGFloat scale = kThumbSize / square.size.width;
+                NSLog(@"scale is: %f", scale);
                 
                 // now we crop the image
                 CGImageRef imageRef = CGImageCreateWithImageInRect([fullImage CGImage], square);
