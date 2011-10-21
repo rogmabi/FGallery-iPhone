@@ -234,10 +234,10 @@
         // create the thumbnail views
         [self buildThumbsViewPhotos];
         
-        // start loading thumbs
-        if ([_photoViews count]) {
-            [self preloadThumbnailImages];
-        }
+//        // start loading thumbs
+//        if ([_photoViews count]) {
+//            [self preloadThumbnailImages];
+//        }
     });
     dispatch_release(buildThumbs);
     
@@ -321,7 +321,7 @@
         [self next];
     }
     if ([_photoViews count] == 0) {
-        
+        [self.navigationController popViewControllerAnimated:YES];
     }
     
     if ([_photoViews count] <= 1) {
@@ -749,18 +749,19 @@
         // we can already show the thumbView
         [self uncurlThumbView];
         [self.navigationItem.rightBarButtonItem setTitle:@"Done"];
+        [self arrangeThumbs];
         
-        // let's do this in a new thread with GCD
-        dispatch_queue_t thumbViewQueue = dispatch_queue_create("ThumbViewQueue", NULL);
-        dispatch_async(thumbViewQueue, ^{
-            [self arrangeThumbs];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                
-//            });
-        });
-        dispatch_release(thumbViewQueue);
+//        // let's do this in a new thread with GCD
+//        dispatch_queue_t thumbViewQueue = dispatch_queue_create("ThumbViewQueue", NULL);
+//        dispatch_async(thumbViewQueue, ^{
+//            
+////            dispatch_async(dispatch_get_main_queue(), ^{
+////                
+////            });
+//        });
+//        dispatch_release(thumbViewQueue);
 	}
-	else 
+	else
 	{
 		_isThumbViewShowing = NO;
 		[self curlThumbView];

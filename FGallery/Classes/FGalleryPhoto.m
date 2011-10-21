@@ -176,24 +176,27 @@
                 // make a copy from the file on disk
                 UIImage *fullImage = [UIImage imageWithContentsOfFile:imagePath];
                 
-                CGRect square;
-                // get the smallest between height and width
-                if (fullImage.size.width > fullImage.size.height) {
-                    square = CGRectMake(0.0, 0.0, fullImage.size.height, fullImage.size.height);
-                } else {
-                    square = CGRectMake(0.0, 0.0, fullImage.size.width, fullImage.size.width);
-                }
+//                CGRect square;
+//                // get the smallest between height and width
+//                if (fullImage.size.width > fullImage.size.height) {
+//                    square = CGRectMake(0.0, 0.0, fullImage.size.height, fullImage.size.height);
+//                } else {
+//                    square = CGRectMake(0.0, 0.0, fullImage.size.width, fullImage.size.width);
+//                }
+//                
+//                CGFloat scale = kThumbSize / square.size.width;
+//                NSLog(@"scale is: %f", scale);
+//                
+//                // now we crop the image
+//                CGImageRef imageRef = CGImageCreateWithImageInRect([fullImage CGImage], square);
+//                UIImage *croppedImage = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
+//                CGImageRelease(imageRef);
+//                // now grab the PNG representation of our image
+//                NSData *thumbData = UIImagePNGRepresentation(croppedImage);
                 
-                CGFloat scale = kThumbSize / square.size.width;
-                NSLog(@"scale is: %f", scale);
-                
-                // now we crop the image
-                CGImageRef imageRef = CGImageCreateWithImageInRect([fullImage CGImage], square);
-                UIImage *croppedImage = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
-                CGImageRelease(imageRef);
-                // now grab the PNG representation of our image
-                NSData *thumbData = UIImagePNGRepresentation(croppedImage);
-                _thumbnail = [UIImage imageWithData:thumbData];
+                CGRect rect = CGRectMake(0.0, 0.0, fullImage.size.width, fullImage.size.height);
+                [fullImage drawInRect:rect];
+                _thumbnail = fullImage;
                 
             } else {
                 NSLog(@"file does not exist");
