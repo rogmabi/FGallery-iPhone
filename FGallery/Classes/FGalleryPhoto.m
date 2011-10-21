@@ -160,7 +160,8 @@
 	}
 }
 
-
+#pragma mark -
+#pragma mark *** loadThumbnailInThread method: here we crop and resize the full image to create the thumbnails
 - (void)loadThumbnailInThread
 {
 	@autoreleasepool {
@@ -171,24 +172,45 @@
             NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:_thumbUrl];
             BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:imagePath];
             if (exists) {
-                _thumbnail = [UIImage imageWithContentsOfFile:imagePath];
+                
+                // make a copy from the file on disk
+                UIImage *fullImage = [UIImage imageWithContentsOfFile:imagePath];
+                
+                CGRect square;
+                // get the smallest between height and width
+                if (fullImage.size.width > fullImage.size.height) {
+                    square = CGRectMake(0.0, 0.0, fullImage.size.height, fullImage.size.height);
+                } else {
+                    square = CGRectMake(0.0, 0.0, fullImage.size.width, fullImage.size.width);
+                }
+                
+                CGFloat scale = kThumbSize / square.size.width;
+                
+                // now we crop the image
+                CGImageRef imageRef = CGImageCreateWithImageInRect([fullImage CGImage], square);
+                UIImage *croppedImage = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
+                CGImageRelease(imageRef);
+                // now grab the PNG representation of our image
+                NSData *thumbData = UIImagePNGRepresentation(croppedImage);
+                _thumbnail = [UIImage imageWithData:thumbData];
+                
             } else {
                 NSLog(@"file does not exist");
             }
         }
-	else {
+        else {
             NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] bundlePath], _thumbUrl];
             _thumbnail = [UIImage imageWithContentsOfFile:path];
         }
-	
-	_hasThumbLoaded = YES;
-	_isThumbLoading = NO;
-	
-	[self performSelectorOnMainThread:@selector(didLoadThumbnail) withObject:nil waitUntilDone:YES];
-	
+        
+        _hasThumbLoaded = YES;
+        _isThumbLoading = NO;
+        
+        [self performSelectorOnMainThread:@selector(didLoadThumbnail) withObject:nil waitUntilDone:YES];
 	}
 }
 
+#pragma mark -
 
 - (void)unloadFullsize
 {

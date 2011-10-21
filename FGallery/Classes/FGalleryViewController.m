@@ -885,7 +885,7 @@
 
 - (void)loadThumbnailImageWithIndex:(NSUInteger)index
 {
-//	NSLog(@"loadThumbnailImageWithIndex: %i", index );
+	NSLog(@"loadThumbnailImageWithIndex: %i", index );
 	
 	FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
 	
@@ -925,7 +925,6 @@
 		photoView.imageView.image = loader.thumbnail;
 	}
 }
-
 
 
 - (FGalleryPhoto*)createGalleryPhotoForIndex:(NSUInteger)index
