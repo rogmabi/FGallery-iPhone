@@ -310,10 +310,52 @@
 	[imgView removeFromSuperview];
 	[thumbView removeFromSuperview];
 	
+    NSLog(@"_photosViews BEFORE removing: %@", _photoViews);
+    
 	[_photoViews removeObjectAtIndex:index];
 	[_photoThumbnailViews removeObjectAtIndex:index];
 	[_photoLoaders removeObjectForKey:[NSString stringWithFormat:@"%i",index]];
     
+    NSLog(@"_photosViews AFTER removing: %@", _photoViews);
+    
+    // update the scrollSize before loading the fullSizeImage
+    NSLog(@"_photoViews BEFORE updating scrollSize: %@", _photoViews);
+    [self layoutViews];
+    NSLog(@"_photoViews AFTER  updating scrollSize: %@", _photoViews);
+    
+    [self updateScrollSize];
+    
+    NSLog(@"_photoLoaders: %@", _photoLoaders);
+}
+
+- (void)doRemovalTransitionFromIndex:(NSUInteger)index {
+    if (index != 0) {
+        // need to move into the index bounds of the _photoViews array
+        _currentIndex = index - 1;
+    } else {
+        // first image, _currentIndex is unchanged
+#warning FIX: bug when deleting first image
+        if (![_photoViews count]) {
+            [self.navigationController popViewControllerAnimated:YES];
+            return;
+        }
+    }
+    
+    if ([_photoViews count] <= 1) {
+        _scroller.pagingEnabled = NO;
+    } else {
+        _scroller.pagingEnabled = YES;
+    }
+    
+    // simulate memoryWarning to clear out the cached images and thumbnails
+    [self didReceiveMemoryWarning];
+    
+    NSLog(@"_photoLoaders: %@", _photoLoaders);
+    
+    [self loadFullsizeImageWithIndex:_currentIndex];
+    
+    [self updateButtons];
+    [self updateTitle];
 }
 
 
@@ -411,36 +453,6 @@
 	
 	[self moveScrollerToCurrentIndexWithAnimation:NO];
 }
-
-
-- (void)doRemovalTransitionFromIndex:(NSUInteger)index {
-    if (index != 0) {
-        [self moveScrollerToCurrentIndexWithAnimation:YES];
-        _currentIndex = index-1;
-    } else {
-        _currentIndex = index;
-        // first image, _currentIndex is unchanged
-        if (![_photoViews count]) {
-            [self.navigationController popViewControllerAnimated:YES];
-            return;
-        }
-    }
-    
-    [self loadFullsizeImageWithIndex:_currentIndex];
-    
-    if ([_photoViews count] <= 1) {
-        _scroller.pagingEnabled = NO;
-    } else {
-        _scroller.pagingEnabled = YES;
-    }
-    
-    [self layoutViews];
-    [self updateButtons];
-    [self updateTitle];
-
-}
-
-
 
 
 #pragma mark - Private Methods
@@ -903,7 +915,7 @@
 - (void)loadThumbnailImageWithIndex:(NSUInteger)index
 {
 	NSLog(@"loadThumbnailImageWithIndex: %i", index );
-	
+	NSLog(@"_photoLoaders: %@", _photoLoaders);
 	FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
 	
 	if( photo == nil )
@@ -1147,8 +1159,6 @@
 			photoView.imageView.image = nil;
 		}
 	}
-	
-	
 }
 
 /*

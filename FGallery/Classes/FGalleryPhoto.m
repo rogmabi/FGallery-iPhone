@@ -133,8 +133,9 @@
 		
 		_isFullsizeLoading = YES;
 		
+        [self loadFullsizeInThread];
 		// spawn a new thread to load from disk
-		[NSThread detachNewThreadSelector:@selector(loadFullsizeInThread) toTarget:self withObject:nil];
+//		[NSThread detachNewThreadSelector:@selector(loadFullsizeInThread) toTarget:self withObject:nil];
 	}
 }
 
@@ -190,7 +191,7 @@
                 _thumbnail = fullImage;
                 
             } else {
-                NSLog(@"file does not exist");
+                NSLog(@"*********************** FILE DOES NOT EXIST");
             }
         }
         else {
