@@ -1,9 +1,9 @@
 //
 //  FGalleryViewController.h
-//  TNF_Trails
+//  FGallery
 //
 //  Created by Grant Davis on 5/19/10.
-//  Copyright 2010 Factory Design Labs. All rights reserved.
+//  Copyright 2011 Grant Davis Interactive, LLC. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -38,7 +38,7 @@ typedef enum
 	BOOL _isScrolling;
 	
 	BOOL _isThumbViewShowing;
-    
+	
     BOOL _isDocumentsGallery;
 	
 	float _prevNextButtonSize;
@@ -87,6 +87,7 @@ typedef enum
 - (void)next;
 - (void)previous;
 - (void)gotoImageByIndex:(NSUInteger)index animated:(BOOL)animated;
+- (void)reloadGallery;
 
 // methods added by Roger
 - (void)layoutViews;
@@ -100,6 +101,8 @@ typedef enum
 @property (nonatomic,readonly) UIView* thumbsView;
 @property NSInteger currentIndex;
 @property (nonatomic,strong) NSString *galleryID;
+@property (nonatomic,retain) NSString *galleryID;
+@property (nonatomic) BOOL useThumbnailView;
 
 - (void)refreshBarButtonItems;
 

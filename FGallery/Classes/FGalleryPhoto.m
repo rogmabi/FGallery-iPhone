@@ -1,9 +1,9 @@
 //
 //  FGalleryPhoto.m
-//  TNF_Trails
+//  FGallery
 //
 //  Created by Grant Davis on 5/20/10.
-//  Copyright 2010 Factory Design Labs. All rights reserved.
+//  Copyright 2011 Grant Davis Interactive, LLC. All rights reserved.
 //
 
 #import "FGalleryPhoto.h"
