@@ -264,7 +264,7 @@
 - (void)reloadGallery
 {
     _currentIndex = 0;
-    _isThumbViewShowing = NO;
+//    _isThumbViewShowing = NO;
     
     // remove the old
     [self destroyViews];
@@ -463,7 +463,12 @@
     _useThumbnailView = useThumbnailView;
     if( self.navigationController ) {
         if (_useThumbnailView) {
-            UIBarButtonItem *btn = [[UIBarButtonItem alloc] initWithTitle:@"See All" style:UIBarButtonItemStylePlain target:self action:@selector(handleSeeAllTouch:)];
+            UIBarButtonItem *btn;
+            if (_isThumbViewShowing) {
+                btn = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(handleSeeAllTouch:)];
+            } else {
+                btn = [[UIBarButtonItem alloc] initWithTitle:@"See All" style:UIBarButtonItemStylePlain target:self action:@selector(handleSeeAllTouch:)];
+            }
             [self.navigationItem setRightBarButtonItem:btn animated:YES];
         }
         else {

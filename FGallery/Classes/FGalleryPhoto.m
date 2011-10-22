@@ -169,7 +169,6 @@
 
 #pragma mark -
 #pragma mark *** loadThumbnailInThread method: here we crop and resize the full image to create the thumbnails
-#warning TODO: load thumbs from a local directory to avoid memory crashed
 - (void)loadThumbnailInThread
 {
 	@autoreleasepool {
