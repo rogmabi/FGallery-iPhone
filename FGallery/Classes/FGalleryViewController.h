@@ -91,7 +91,6 @@ typedef enum
 
 // methods added by Roger
 - (void)layoutViews;
-- (void)doRemovalTransitionFromIndex:(NSUInteger)index;
 
 @property (readonly) BOOL isDocumentsGallery;
 
@@ -101,10 +100,9 @@ typedef enum
 @property (nonatomic,readonly) UIView* thumbsView;
 @property NSInteger currentIndex;
 @property (nonatomic,strong) NSString *galleryID;
-@property (nonatomic,retain) NSString *galleryID;
 @property (nonatomic) BOOL useThumbnailView;
 
-- (void)refreshBarButtonItems;
+
 
 @end
 

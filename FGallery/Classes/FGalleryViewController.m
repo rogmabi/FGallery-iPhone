@@ -1,9 +1,9 @@
 
 //  FGalleryViewController.m
-//  TNF_Trails
+//  FGallery
 //
 //  Created by Grant Davis on 5/19/10.
-//  Copyright 2010 Factory Design Labs. All rights reserved.
+//  Copyright 2011 Grant Davis Interactive, LLC. All rights reserved.
 //
 
 #import "FGalleryViewController.h"
@@ -18,7 +18,7 @@
 
 // general
 - (void)buildViews;
-
+- (void)destroyViews;
 - (void)layoutViews;
 - (void)moveScrollerToCurrentIndexWithAnimation:(BOOL)animation;
 - (void)updateTitle;
@@ -66,7 +66,6 @@
 
 
 @implementation FGalleryViewController
-
 @synthesize _barItems;
 @synthesize isDocumentsGallery;
 @synthesize galleryID;
@@ -204,40 +203,36 @@
 	
     if ([_barItems objectAtIndex:0]) {
         UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] 
-                                           initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+                                          initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
         [_barItems insertObject:_nextButton atIndex:1];
         [_barItems insertObject:_prevButton atIndex:1];
         [_barItems insertObject:flexibleSpace atIndex:1];
     } else {
-	// add prev next to front of the array
-	[_barItems insertObject:_nextButton atIndex:0];
-	[_barItems insertObject:_prevButton atIndex:0];
-	
-	_prevNextButtonSize = leftIcon.size.width;
-	
-	// set buttons on the toolbar.
-	[_toolbar setItems:_barItems animated:NO];
+        // add prev next to front of the array
+        [_barItems insertObject:_nextButton atIndex:0];
+        [_barItems insertObject:_prevButton atIndex:0];
+        
+        _prevNextButtonSize = leftIcon.size.width;
+    }
+    // set buttons on the toolbar.
+    [_toolbar setItems:_barItems animated:NO];
     
-	// add top right nav button for thumbs view
-	if( self.navigationController )
-	{
-		UIBarButtonItem *btn = [[UIBarButtonItem alloc] initWithTitle:@"See All" style:UIBarButtonItemStyleDone target:self action:@selector(handleSeeAllTouch:)];
-		[self.navigationItem setRightBarButtonItem:btn animated:YES];
     // build stuff
     [self reloadGallery];
 }
+
 
 - (void)viewDidUnload {
     
     [self destroyViews];
     
-    [_container release], _container = nil;
-    [_innerContainer release], _innerContainer = nil;
-    [_scroller release], _scroller = nil;
-    [_thumbsView release], _thumbsView = nil;
-    [_toolbar release], _toolbar = nil;
-    [_captionContainer release], _captionContainer = nil;
-    [_caption release], _caption = nil;
+    _container = nil;
+    _innerContainer = nil;
+    _scroller = nil;
+    _thumbsView = nil;
+    _toolbar = nil;
+    _captionContainer = nil;
+    _caption = nil;
     
     [super viewDidUnload];
 }
@@ -320,8 +315,8 @@
 {
 	_isActive = NO;
 
-	[super viewWillDisappear:animated];
-	
+    [super viewWillDisappear:animated];
+    
 	[[UIApplication sharedApplication] setStatusBarStyle:_prevStatusStyle animated:animated];
 }
 
@@ -362,16 +357,10 @@
 	[imgView removeFromSuperview];
 	[thumbView removeFromSuperview];
 	
-    NSLog(@"_photosViews BEFORE removing: %@", _photoViews);
-    
 	[_photoViews removeObjectAtIndex:index];
 	[_photoThumbnailViews removeObjectAtIndex:index];
 	[_photoLoaders removeObjectForKey:[NSString stringWithFormat:@"%i",index]];
 	
-    NSLog(@"_photosViews AFTER removing: %@", _photoViews);
-    
-    // update the scrollSize before loading the fullSizeImage
-    NSLog(@"_photoViews BEFORE updating scrollSize: %@", _photoViews);
 	[self layoutViews];
 	[self updateButtons];
     [self updateTitle];
@@ -405,12 +394,11 @@
 
 - (void)gotoImageByIndex:(NSUInteger)index animated:(BOOL)animated
 {
-//	NSLog(@"gotoImageByIndex: %i, out of %i", index, [_photoSource numberOfPhotosForPhotoGallery:self]);
-	
 	NSUInteger numPhotos = [_photoSource numberOfPhotosForPhotoGallery:self];
 	
 	// constrain index within our limits
     if( index >= numPhotos ) index = numPhotos - 1;
+	
 	
 	if( numPhotos == 0 ) {
 		
@@ -418,6 +406,7 @@
 		_currentIndex = -1;
 	}
 	else {
+		
 		// clear the fullsize image in the old photo
 		[self unloadFullsizeImageWithIndex:_currentIndex];
 		
@@ -455,9 +444,7 @@
 	
 	[self resizeImageViewsWithRect:_scroller.frame];
 	
-    if ([_barItems count]) {
 	[self layoutButtons];
-    }
 	
 	[self arrangeThumbs];
 	
@@ -471,7 +458,7 @@
     _useThumbnailView = useThumbnailView;
     if( self.navigationController ) {
         if (_useThumbnailView) {
-            UIBarButtonItem *btn = [[[UIBarButtonItem alloc] initWithTitle:@"See All" style:UIBarButtonItemStylePlain target:self action:@selector(handleSeeAllTouch:)] autorelease];
+            UIBarButtonItem *btn = [[UIBarButtonItem alloc] initWithTitle:@"See All" style:UIBarButtonItemStylePlain target:self action:@selector(handleSeeAllTouch:)];
             [self.navigationItem setRightBarButtonItem:btn animated:YES];
         }
         else {
@@ -554,7 +541,7 @@
 	if ([application respondsToSelector: @selector(setStatusBarHidden:withAnimation:)]) {
 		[[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation: UIStatusBarAnimationFade]; // 3.2+
 	} else {
-		[[UIApplication sharedApplication] setStatusBarHidden: YES animated:YES]; // 2.0 - 3.2
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade]; // 2.0 - 3.2
 	}
 	
 	[self.navigationController setNavigationBarHidden:YES animated:YES];
@@ -579,7 +566,7 @@
 	if ([application respondsToSelector: @selector(setStatusBarHidden:withAnimation:)]) {
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade]; // 3.2+
 	} else {
-		[[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // 2.0 - 3.2
+		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone]; // 2.0 - 3.2
 	}
     
 	[self.navigationController setNavigationBarHidden:NO animated:YES];
@@ -724,7 +711,6 @@
 		photoView.photoDelegate = self;
 		[_scroller addSubview:photoView];
 		[_photoViews addObject:photoView];
-		[photoView release];
 	}
 }
 
@@ -741,7 +727,6 @@
 		[thumbView setTag:i];
 		[_thumbsView addSubview:thumbView];
 		[_photoThumbnailViews addObject:thumbView];
-		[thumbView release];
 	}
 }
 
@@ -1040,14 +1025,6 @@
 	}
 }
 
-/*
-- (void)galleryPhoto:(FGalleryPhoto*)photo willLoadFullsizeFromUrl:(NSString*)url
-{
-//	NSLog(@"galleryPhoto:willLoadFullsizeFromUrl:");
-}
- */
-
-
 
 - (void)galleryPhoto:(FGalleryPhoto*)photo didLoadThumbnail:(UIImage*)image
 {
@@ -1138,16 +1115,12 @@
 			photoView.imageView.image = nil;
 		}
 	}
+	
+	
 }
 
-
-- (void)refreshBarButtonItems {
-    [self layoutButtons];
-}
 
 - (void)dealloc {	
-	
-//	NSLog(@"FGalleryViewController dealloc");
 	
 	// remove KVO listener
 	[_container removeObserver:self forKeyPath:@"frame"];
@@ -1168,50 +1141,36 @@
 	
 	_photoSource = nil;
 	
-    [_caption release];
     _caption = nil;
 	
-    [_captionContainer release];
     _captionContainer = nil;
 	
-    [_container release];
     _container = nil;
 	
-    [_innerContainer release];
     _innerContainer = nil;
 	
-    [_toolbar release];
     _toolbar = nil;
 	
-    [_thumbsView release];
     _thumbsView = nil;
 	
-    [_scroller release];
     _scroller = nil;
 	
 	[_photoLoaders removeAllObjects];
-    [_photoLoaders release];
     _photoLoaders = nil;
 	
 	[_barItems removeAllObjects];
-	[_barItems release];
 	_barItems = nil;
 	
 	[_photoThumbnailViews removeAllObjects];
-    [_photoThumbnailViews release];
     _photoThumbnailViews = nil;
 	
 	[_photoViews removeAllObjects];
-    [_photoViews release];
     _photoViews = nil;
 	
-    [_nextButton release];
     _nextButton = nil;
 	
-    [_prevButton release];
     _prevButton = nil;
 	
-    [super dealloc];
 }
 
 
