@@ -348,7 +348,10 @@
 {
 	// remove the image and thumbnail at the specified index.
 	FGalleryPhotoView *imgView = [_photoViews objectAtIndex:index];
- 	FGalleryPhotoView *thumbView = [_photoThumbnailViews objectAtIndex:index];
+    FGalleryPhotoView *thumbView;
+    if ([_photoThumbnailViews count]) {
+        thumbView = [_photoThumbnailViews objectAtIndex:index];
+    }
 	FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i",index]];
 	
 	[photo unloadFullsize];
@@ -358,7 +361,9 @@
 	[thumbView removeFromSuperview];
 	
 	[_photoViews removeObjectAtIndex:index];
-	[_photoThumbnailViews removeObjectAtIndex:index];
+    if ([_photoThumbnailViews count]) {
+        [_photoThumbnailViews removeObjectAtIndex:index];
+    }
 	[_photoLoaders removeObjectForKey:[NSString stringWithFormat:@"%i",index]];
 	
 	[self layoutViews];
@@ -891,7 +896,6 @@
 - (void)loadThumbnailImageWithIndex:(NSUInteger)index
 {
 	NSLog(@"loadThumbnailImageWithIndex: %i", index );
-	NSLog(@"_photoLoaders: %@", _photoLoaders);
 	FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
 	
 	if( photo == nil )
@@ -1020,8 +1024,10 @@
 	
 	// show activity indicator for thumbail 
 	if( _isThumbViewShowing ) {
-		FGalleryPhotoView *thumb = [_photoThumbnailViews objectAtIndex:photo.tag];
-		[thumb.activity startAnimating];
+        if ([_photoThumbnailViews count]) {
+            FGalleryPhotoView *thumb = [_photoThumbnailViews objectAtIndex:photo.tag];
+            [thumb.activity startAnimating];
+        }
 	}
 }
 

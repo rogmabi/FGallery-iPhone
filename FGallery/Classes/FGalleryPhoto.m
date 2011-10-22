@@ -169,6 +169,7 @@
 
 #pragma mark -
 #pragma mark *** loadThumbnailInThread method: here we crop and resize the full image to create the thumbnails
+#warning TODO: load thumbs from a local directory to avoid memory crashed
 - (void)loadThumbnailInThread
 {
 	@autoreleasepool {
@@ -179,17 +180,7 @@
             NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:_thumbUrl];
             BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:imagePath];
             if (exists) {
-                
-                // make a copy from the file on disk
-                UIImage *fullImage = [UIImage imageWithContentsOfFile:imagePath];
-                
-                CGRect rect = CGRectMake(0.0, 0.0, fullImage.size.width, fullImage.size.height);
-                UIGraphicsBeginImageContext(fullImage.size);
-                [fullImage drawInRect:rect];
-                UIGraphicsEndImageContext();
-                
-                _thumbnail = fullImage;
-                
+                _thumbnail = [UIImage imageWithContentsOfFile:imagePath];
             } else {
                 NSLog(@"*********************** FILE DOES NOT EXIST");
             }
