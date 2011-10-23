@@ -779,10 +779,7 @@
 	if( !_isThumbViewShowing ) 
 	{
 		_isThumbViewShowing = YES;
-        [self preloadThumbnailImages];
-		[self arrangeThumbs];
 		[self uncurlThumbView];
-		[self.navigationItem.rightBarButtonItem setTitle:@"Done"];
         
         // we can release any fullImage that was already loaded
         // unload fullsize and thumbnail images for all our images except at the current index.
@@ -790,20 +787,26 @@
         NSUInteger i, count = [keys count];
         for (i = 0; i < count; i++) 
         {
-            if( i != _currentIndex ) {
-            FGalleryPhoto *photo = [_photoLoaders objectForKey:[keys objectAtIndex:i]];
-            [photo unloadFullsize];
-            //                [photo unloadThumbnail];
-            
-            // unload main image thumb
-            FGalleryPhotoView *photoView = [_photoViews objectAtIndex:i];
-            photoView.imageView.image = nil;
-            
-            // unload thumb tile
-            //                photoView = [_photoThumbnailViews objectAtIndex:i];
-            //                photoView.imageView.image = nil;
-            }
+//            if( i != _currentIndex ) {
+                FGalleryPhoto *photo = [_photoLoaders objectForKey:[keys objectAtIndex:i]];
+                [photo unloadFullsize];
+//                [photo unloadThumbnail];
+                
+                // unload main image thumb
+                FGalleryPhotoView *photoView = [_photoViews objectAtIndex:i];
+                photoView.imageView.image = nil;
+                
+                // unload thumb tile
+//                photoView = [_photoThumbnailViews objectAtIndex:i];
+//                photoView.imageView.image = nil;
+//            }
         }
+        
+        [self loadAllThumbViewPhotos];
+		[self arrangeThumbs];
+		[self.navigationItem.rightBarButtonItem setTitle:@"Done"];
+        
+        
         
 	}
 	else 
