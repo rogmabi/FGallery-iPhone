@@ -200,7 +200,8 @@
 	UIImage *rightIcon = [UIImage imageNamed:@"photo-gallery-right.png"];
 	_nextButton = [[UIBarButtonItem alloc] initWithImage:rightIcon style:UIBarButtonItemStylePlain target:self action:@selector(next)];
 	_prevButton = [[UIBarButtonItem alloc] initWithImage:leftIcon style:UIBarButtonItemStylePlain target:self action:@selector(previous)];
-	
+
+#warning Bookmark: build barItems
     if ([_barItems objectAtIndex:0]) {
         UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] 
                                           initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -674,19 +675,20 @@
 	_nextButton.enabled = ( _currentIndex >= [_photoSource numberOfPhotosForPhotoGallery:self]-1 ) ? NO : YES;
 }
 
+#warning FIX layoutButtons
 - (void)layoutButtons
 {
     if (_barItems && [_barItems count]) {
-	NSUInteger buttonWidth = roundf( _toolbar.frame.size.width / [_barItems count] - _prevNextButtonSize * .5);
-	
-	// loop through all the button items and give them the same width
-	NSUInteger i, count = [_barItems count];
-	for (i = 0; i < count; i++) {
-		UIBarButtonItem *btn = [_barItems objectAtIndex:i];
-		btn.width = buttonWidth;
-	}
-	[_toolbar setNeedsLayout];
-}
+        NSUInteger buttonWidth = roundf( _toolbar.frame.size.width / [_barItems count] - _prevNextButtonSize * .5);
+        
+        // loop through all the button items and give them the same width
+        NSUInteger i, count = [_barItems count];
+        for (i = 0; i < count; i++) {
+            UIBarButtonItem *btn = [_barItems objectAtIndex:i];
+            btn.width = buttonWidth;
+        }
+        [_toolbar setNeedsLayout];
+    }
 }
 
 - (void)moveScrollerToCurrentIndexWithAnimation:(BOOL)animation
