@@ -1142,15 +1142,17 @@
 		{
 			FGalleryPhoto *photo = [_photoLoaders objectForKey:[keys objectAtIndex:i]];
 			[photo unloadFullsize];
-			[photo unloadThumbnail];
+//			[photo unloadThumbnail];
+            photo = nil;
 			
 			// unload main image thumb
 			FGalleryPhotoView *photoView = [_photoViews objectAtIndex:i];
 			photoView.imageView.image = nil;
 			
 			// unload thumb tile
-			photoView = [_photoThumbnailViews objectAtIndex:i];
-			photoView.imageView.image = nil;
+//			photoView = [_photoThumbnailViews objectAtIndex:i];
+//			photoView.imageView.image = nil;
+            photoView = nil;
 		}
 	}
 	
