@@ -366,10 +366,17 @@
         [_photoThumbnailViews removeObjectAtIndex:index];
     }
 	[_photoLoaders removeObjectForKey:[NSString stringWithFormat:@"%i",index]];
-	
-	[self layoutViews];
-	[self updateButtons];
-    [self updateTitle];
+//	NSUInteger newIndex;
+//    if (_currentIndex == 0) {
+//        newIndex = 0;
+//    } else {
+//        newIndex = index - 1;
+//    }
+//    [self gotoImageByIndex:index animated:YES];
+    
+//	[self layoutViews];
+//	[self updateButtons];
+//    [self updateTitle];
 }
 
 
