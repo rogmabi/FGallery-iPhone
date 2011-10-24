@@ -201,7 +201,6 @@
 	_nextButton = [[UIBarButtonItem alloc] initWithImage:rightIcon style:UIBarButtonItemStylePlain target:self action:@selector(next)];
 	_prevButton = [[UIBarButtonItem alloc] initWithImage:leftIcon style:UIBarButtonItemStylePlain target:self action:@selector(previous)];
 
-#warning Bookmark: build barItems
     if ([_barItems objectAtIndex:0]) {
         UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] 
                                           initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -682,7 +681,6 @@
 	_nextButton.enabled = ( _currentIndex >= [_photoSource numberOfPhotosForPhotoGallery:self]-1 ) ? NO : YES;
 }
 
-#warning FIX layoutButtons
 - (void)layoutButtons
 {
     if (_barItems && [_barItems count]) {
