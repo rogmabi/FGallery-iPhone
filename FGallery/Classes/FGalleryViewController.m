@@ -299,6 +299,8 @@
 	
 	[self layoutViews];
 	
+    [self loadAllThumbViewPhotos];
+    
 	// update status bar to be see-through
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
 	
