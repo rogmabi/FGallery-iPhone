@@ -1,3 +1,10 @@
+# Important update coming soon
+
+I am currently working on this project to heavily optimize it and offer some more flexibility and ease of use.
+
+I suggest that you wait for this update before you clone or fork this project
+
+
 # FGallery - A Photo Gallery for iOS
 ## Overview
 FGallery is a photo gallery viewer developed for iPhone applications. FGallery implements a delegate style design pattern similar to how UITableViewDelegates work. You may load images from either the local application bundle, or from the network.
